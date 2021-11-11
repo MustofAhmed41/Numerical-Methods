@@ -1,0 +1,34 @@
+#include <bits/stdc++.h>
+#define ITERATIONS 1000
+
+using namespace std;
+
+double f(double x){
+    return x*x*x+x*x+x+7;
+}
+
+double fPrime(double x){
+    return 3*x*x+2*x+1;
+}
+
+
+void newtonRhapson(double x0){
+    double x1;
+    double eps = 0.001;
+    for(int i = 0 ; i < ITERATIONS;i++){
+        x1 = x0 - f(x0)/fPrime(x0);
+        cout << f(x0) << " " << fPrime(x0) << " " << x0 << " " << x1 << endl;
+        double error = abs( x1-x0 )/x0;
+        if(error <= eps){
+            break;
+        }
+        x0 = x1;
+    }
+    cout << "The root is at : " << x1 << endl;
+}
+
+int main()
+{
+    newtonRhapson(5);
+    return 0;
+}

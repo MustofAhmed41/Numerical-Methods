@@ -1,0 +1,133 @@
+#include <bits/stdc++.h>
+#define ITERATIONS 5000
+#define EPS 0.0001
+
+using namespace std;
+int n;
+int arr[100];
+
+
+double f(double x){
+    double temp = 0;
+    for(int i = n;i>=0;i--){
+        temp = temp + arr[i]*pow(x,i);
+    }
+    return temp;
+}
+
+double fPrime(double x){
+    double temp = 0;
+    for(int i = n;i>=1;i--){
+        temp = temp + i*arr[i]*pow(x,i-1);
+    }
+    return temp;
+}
+
+
+void newtonRhapson(double x0){
+    double x1;
+    for(int i = 0 ; i < ITERATIONS;i++){
+        x1 = x0 - f(x0)/fPrime(x0);
+        double error = abs( x1-x0 )/x1;
+        if(fabs(error) <= EPS){
+            break;
+        }
+        x0 = x1;
+    }
+    cout << "The root with newtonRhapson Method is : " << x1 << endl;
+}
+
+
+void secantMethod(double x1, double x2)
+{
+    double n = 0, xm, x0, c;
+    do
+    {
+        x0 = (x1 * f(x2) - x2 * f(x1)) / (f(x2) - f(x1));
+        c = f(x1) * f(x0);
+        x1 = x2;
+        x2 = x0;
+        n++;
+        if (c == 0)
+            break;
+        xm = (x1 * f(x2) - x2 * f(x1)) / (f(x2) - f(x1));
+    }
+    while (fabs(xm - x0) >= EPS);
+    cout << "The root with Secant Method is : "<<x0 << endl;
+}
+
+
+
+
+void bisectionMethod(double a, double b){
+    if(f(a)*f(b)>0){
+        cout << "Wrong Guess";
+        return;
+    }
+    double c;
+    while(true){
+        c = (a+b)/2;
+        if(f(a)*f(c)<0)
+            b = c;
+        else
+            a = c;
+
+        double error = fabs(a-b);
+        if(error<=EPS){
+            break;
+        }
+
+    }
+
+    cout << "The root with Bisection Method is : " << c << endl;
+
+}
+
+
+void falsePosition(double a, double b){
+    if(f(a)*f(b)>0){
+        cout << "Wrong Guess";
+        return;
+    }
+    double c;
+
+    for(int i = 0 ; i < ITERATIONS;i++){
+        c = a - (f(a)*(b-a))/(f(b)-f(a));
+        double error = abs(b-c);
+        if(error<=EPS){
+            break;
+        }
+
+        if(f(c)*f(a)<0){
+            b = c;
+        }else{
+            a = c;
+        }
+    }
+
+    cout << "The root with False Position Method is : " << c << endl;
+
+}
+
+
+
+int main()
+{
+    cout << "Input number of degree : ";
+    cin >> n;
+
+    for(int i=n;i>=0;i--){
+        cout << "Enter the coefficient of " << i << " th degree : ";
+        cin >> arr[i];
+    }
+    double root = (double)(arr[n-1]*arr[n-1])/arr[n] - 2 * (arr[n-2]/arr[n]);
+    cout << root;
+    root = sqrt(root);
+    cout << "The maximum possible root is +ve/-ve : "<<  root <<endl;
+
+    bisectionMethod(root,(-1)*root);
+    falsePosition(root,(-1)*root);
+    secantMethod(root,(-1)*root);
+    newtonRhapson(root);
+    return 0;
+}
